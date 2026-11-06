@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080611">
+<title>PATILNEO Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080611;color:#f7f4ff;font-family:Arial,sans-serif;padding:20px}
+.wrap{max-width:680px;margin:0 auto}.brand{font-weight:900;letter-spacing:2px;color:#fff;font-size:25px}.brand span{color:#b36bff}
+.card{margin-top:20px;background:#151020;border:1px solid #39234f;border-radius:18px;padding:20px;box-shadow:0 10px 40px #0005}
+h1{font-size:24px;margin:8px 0}p{color:#bcb4cc;line-height:1.5}.warning{background:#2a1b38;border-left:3px solid #bd75ff;padding:12px;border-radius:8px;font-size:13px}
+label{display:block;margin:15px 0 6px;color:#d8cce8;font-size:13px}input,select,textarea{width:100%;padding:13px;border-radius:10px;border:1px solid #49345e;background:#0d0916;color:#fff;font-size:15px}
+button{border:0;border-radius:10px;padding:13px 16px;font-weight:700;cursor:pointer}.primary{background:linear-gradient(90deg,#8d38ff,#bf63ff);color:white;width:100%;margin-top:18px}.secondary{background:#2a2038;color:white}.danger{background:#47202b;color:#ffb6c5}.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #30243e}.item img{width:54px;height:72px;object-fit:cover;border-radius:6px;background:#261739}.item .info{flex:1;min-width:0}.item b{display:block;overflow-wrap:anywhere}.item small{color:#bcb4cc;overflow-wrap:anywhere}.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.note{font-size:12px;color:#a99eb8}
+</style></head>
+<body><div class="wrap">
+<div class="brand">PATIL<span>NEO</span> / ADMIN</div>
+<div class="card">
+<h1>Add a movie or series</h1>
+<p>Movie title, poster image link, and video/trailer link add kara.</p>
+<div class="warning"><b>Important:</b> हा demo admin panel आहे. Data फक्त याच browser/device मध्ये save होतो; इतर visitors ना आपोआप दिसणार नाही. सर्व users साठी shared catalogue हवे असेल तर Firebase/backend जोडावे लागेल. फक्त तुमच्या मालकीचा किंवा streaming permission असलेला video वापरा.</div>
+<form id="movieForm">
+<label>Movie / Series name *</label><input id="title" required maxlength="90" placeholder="e.g. My Short Film">
+<label>Poster image URL *</label><input id="poster" type="url" required placeholder="https://example.com/poster.jpg">
+<label>Video / Trailer URL *</label><input id="video" type="url" required placeholder="https://example.com/video.mp4">
+<label>Type</label><select id="type"><option>Movie</option><option>Series</option></select>
+<label>Genre</label><select id="genre"><option>Action</option><option>Drama</option><option>Sci-Fi</option><option>Romance</option><option>Comedy</option><option>Marathi</option><option>Documentary</option><option>Other</option></select>
+<label>Year</label><input id="year" type="number" min="1900" max="2100" value="2026">
+<label>Description</label><textarea id="description" rows="3" maxlength="400" placeholder="Short description"></textarea>
+<button class="primary" type="submit">＋ Save Movie</button>
+</form>
+<div class="actions"><button class="secondary" id="exportBtn" type="button">Export backup JSON</button><a href="index.html"><button class="secondary" type="button">Open website</button></a></div>
+<p class="note">Poster/video URLs must be publicly accessible. A normal webpage link may not play as a video; direct MP4 or a supported trailer link is best.</p>
+</div>
+<div class="card"><h2>Your added titles</h2><div id="items"></div></div>
+</div>
+<script>
+const KEY='patilneo-admin-titles-v1';
+const $=s=>document.querySelector(s);
+function getItems(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+function saveItems(items){localStorage.setItem(KEY,JSON.stringify(items));render()}
+function render(){const items=getItems();$('#items').innerHTML=items.length?items.map((x,i)=>`<div class="item"><img src="${esc(x.poster)}" onerror="this.style.opacity='.25'"><div class="info"><b>${esc(x.title)}</b><small>${esc(x.type)} · ${esc(x.genre)} · ${esc(String(x.year))}</small></div><button class="danger" data-delete="${i}">Delete</button></div>`).join(''):'<p>No movies added yet.</p>'}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('#movieForm').addEventListener('submit',e=>{e.preventDefault();const items=getItems();items.unshift({id:Date.now(),title:$('#title').value.trim(),poster:$('#poster').value.trim(),video:$('#video').value.trim(),type:$('#type').value,genre:$('#genre').value,year:Number($('#year').value)||2026,description:$('#description').value.trim(),category:'Custom',rating:'—',label:'MY UPLOAD',colors:['#201035','#8e3cff'],progress:0});saveItems(items);e.target.reset();$('#year').value=2026;alert('Saved on this browser. Note: this is not shared with other visitors.')});
+$('#items').addEventListener('click',e=>{const b=e.target.closest('[data-delete]');if(!b)return;const items=getItems();items.splice(Number(b.dataset.delete),1);saveItems(items)});
+$('#exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(getItems(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='patilneo-custom-movies.json';a.click();URL.revokeObjectURL(a.href)});
+render();
+</script></body></html>

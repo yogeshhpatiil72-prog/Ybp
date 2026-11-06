@@ -1,0 +1,32 @@
+PATIL NEO SOCIAL APP — SETUP
+
+IMPORTANT
+- Existing PATIL NEO visual style is retained (dark/purple theme and layout). The old movie catalogue is replaced by a social feed.
+- This is a Firebase-connected web app starter. Firebase project settings must be enabled before public use.
+- Firebase project used: patill-neo (the config is already inside script.js).
+
+1) Firebase Console: https://console.firebase.google.com/ -> open project patill-neo.
+2) Authentication -> Sign-in method -> enable Email/Password.
+3) Firestore Database -> create/confirm database.
+4) Storage -> Get started / enable Cloud Storage. If Firebase asks for billing, complete the required setup before uploads can work.
+5) Firestore -> Rules: copy all contents of firestore.rules and Publish.
+6) Storage -> Rules: copy all contents of storage.rules and Publish.
+7) GitHub repository root: replace index.html, style.css, script.js. Upload manifest.json and sw.js too. Keep file names exactly.
+8) Commit changes; wait for GitHub Pages deployment; open your site and refresh.
+
+FEATURES IN THIS STARTER
+- Email/password signup and login
+- Public feed with photo/video/reel posts
+- Upload from every signed-in user
+- Likes, comments, follow button, search and profile's own posts
+- Reels filter and videos filter
+- Basic offline shell caching (new uploads/feed need internet)
+
+LIMITATIONS / BEFORE PUBLIC LAUNCH
+- This is a first working starter, not a finished large-scale YouTube/Instagram clone.
+- Videos are uploaded to Firebase Storage. Large video hosting/bandwidth can become costly; set Firebase budget alerts and limits.
+- Firestore rules are a starter. Before a public launch, add stronger validation, rate limits, reporting/blocking, moderation, pagination, verified creator identity and abuse prevention.
+- Following feed currently shows the user's own posts as a placeholder; a full multi-user following timeline needs a dedicated indexed feed query.
+- Profile view currently shows the signed-in user's posts; editing profile/avatar and public profile pages are next features.
+- Use only content you own or have permission to publish. Do not upload copyrighted films or music without permission.
+- Old admin.html is kept as a backup and is not used by the new social feed.
